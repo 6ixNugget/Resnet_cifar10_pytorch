@@ -83,6 +83,7 @@ def main():
                                 weight_decay=CONFIG["weight_decay"])
 
     # optionally resume from a checkpoint
+    start_epoch = 0
     if FLAGS.resume:
         if os.path.isfile(FLAGS.resume):
             print("=> loading checkpoint '{}'".format(FLAGS.resume))
