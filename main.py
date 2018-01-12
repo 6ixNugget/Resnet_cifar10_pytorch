@@ -82,19 +82,19 @@ def main():
                                 momentum=CONFIG["momentum"],
                                 weight_decay=CONFIG["weight_decay"])
 
-    # # optionally resume from a checkpoint
-    # if FLAGS.resume:
-    #     if os.path.isfile(FLAGS.resume):
-    #         print("=> loading checkpoint '{}'".format(FLAGS.resume))
-    #         checkpoint = torch.load(FLAGS.resume)
-    #         FLAGS.start_epoch = checkpoint['epoch']
-    #         best_prec1 = checkpoint['best_prec1']
-    #         model.load_state_dict(checkpoint['state_dict'])
-    #         optimizer.load_state_dict(checkpoint['optimizer'])
-    #         print("=> loaded checkpoint '{}' (epoch {})"
-    #               .format(FLAGS.resume, checkpoint['epoch']))
-    #     else:
-    #         print("=> no checkpoint found at '{}'".format(FLAGS.resume))
+    # optionally resume from a checkpoint
+    if FLAGS.resume:
+        if os.path.isfile(FLAGS.resume):
+            print("=> loading checkpoint '{}'".format(FLAGS.resume))
+            checkpoint = torch.load(FLAGS.resume)
+            start_epoch = checkpoint['epoch']
+            best_prec1 = checkpoint['best_prec1']
+            model.load_state_dict(checkpoint['state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer'])
+            print("=> loaded checkpoint '{}' (epoch {})"
+                  .format(FLAGS.resume, checkpoint['epoch']))
+        else:
+            print("=> no checkpoint found at '{}'".format(FLAGS.resume))
 
     cudnn.benchmark = True
 
@@ -137,7 +137,7 @@ def main():
         validate(val_loader, model, criterion)
         return
 
-    for epoch in range(int(model.module.global_epoch), CONFIG["epochs"]):
+    for epoch in range(start_epoch, CONFIG["epochs"]):
         adjust_learning_rate(optimizer, epoch)
 
         # train for one epoch
@@ -156,9 +156,6 @@ def main():
             'best_prec1': best_prec1,
             'optimizer' : optimizer.state_dict(),
         }, is_best)
-
-        model.module.global_epoch += 1
-
 
 def train(train_loader, model, criterion, optimizer, epoch):
     batch_time = AverageMeter()

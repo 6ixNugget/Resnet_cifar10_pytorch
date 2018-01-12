@@ -111,7 +111,6 @@ class ResNet(nn.Module):
         self.avgpool = nn.AvgPool2d(7, stride=1)
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
-        #self.global_epoch = Variable(torch.IntTensor(1).zero_(), requires_grad=False)
         self.register_buffer('global_epoch', torch.IntTensor(1).zero_())
 
         for m in self.modules():
