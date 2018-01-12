@@ -40,7 +40,7 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
 parser.add_argument('--print-freq', '-p', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
 
-parser.add_argument('--resume', default='./runs', type=str,
+parser.add_argument('--resume', default='.', type=str,
                     help='path to latest checkpoint (default: none)')
 
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
