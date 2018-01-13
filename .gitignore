@@ -102,3 +102,6 @@ ENV/
 
 cifar-10-batches-py
 .vscode
+checkpoint.pth.tar
+model_best.pth.tar
+runs/

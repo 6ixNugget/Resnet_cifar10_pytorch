@@ -13,6 +13,7 @@ import torch.utils.data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models 
+from tensorboardX import SummaryWriter
 
 import resnet
 
@@ -51,6 +52,7 @@ parser.add_argument('--pretrained', action='store_true',
 
 best_prec1 = 0
 
+writer = SummaryWriter()
 
 def main():
     global FLAGS, CONFIG, best_prec1
@@ -170,6 +172,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
     end = time.time()
     for i, (input, target) in enumerate(train_loader):
+
         # measure data loading time
         data_time.update(time.time() - end)
 
@@ -196,6 +199,11 @@ def train(train_loader, model, criterion, optimizer, epoch):
         batch_time.update(time.time() - end)
         end = time.time()
 
+        # write logs for tensorboard
+        writer.add_scalar('training/learning_rate',  optimizer.param_groups[0]['lr'], global_step=epoch*len(train_loader)+i)
+        writer.add_scalars('training/topN', {'top1': prec1[0],'top5': prec5[0]}, global_step=epoch*len(train_loader)+i)
+        writer.add_scalar('training/loss', loss, global_step=epoch*len(train_loader)+i)
+
         if i % FLAGS.print_freq == 0:
             print('Epoch: [{0}][{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
@@ -218,6 +226,7 @@ def validate(val_loader, model, criterion):
 
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
+
         target = target.cuda(async=True)
         input_var = torch.autograd.Variable(input, volatile=True)
         target_var = torch.autograd.Variable(target, volatile=True)
