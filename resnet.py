@@ -32,7 +32,9 @@ class BasicBlock(nn.Module):
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = conv3x3(planes, planes)
-        self.bn2 = nn.Dropout2d(inplace=True) # nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+        # Dropout
+        self.dropout = nn.Dropout2d(inplace=True)
         self.downsample = downsample
         self.stride = stride
 
@@ -44,7 +46,7 @@ class BasicBlock(nn.Module):
         out = self.relu(out)
 
         out = self.conv2(out)
-        out = self.bn2(out)
+        # out = self.bn2(out)
 
         if self.downsample is not None:
             residual = self.downsample(x)
@@ -52,6 +54,8 @@ class BasicBlock(nn.Module):
         out += residual
         out = self.relu(out)
 
+        # Dropout
+        out = self.dropout(out)
         return out
 
 
@@ -124,8 +128,8 @@ class ResNet(nn.Module):
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
                 nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.Dropout2d(inplace=True) #nn.BatchNorm2d(planes * block.expansion),
+                          kernel_size=1, stride=stride, bias=False)
+                # nn.BatchNorm2d(planes * block.expansion),
             )
 
         layers = []
