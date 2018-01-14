@@ -59,15 +59,15 @@ def main():
     FLAGS = parser.parse_args()
     CONFIG = _parse_config()
 
-    # # create model
-    # if FLAGS.pretrained:
-    #     print("=> using pre-trained model '{}'".format(FLAGS.arch))
-    #     model = models.__dict__[FLAGS.arch](pretrained=True)
-    # else:
-    #     print("=> creating model '{}'".format(FLAGS.arch))
-    #     model = models.__dict__[FLAGS.arch]()
+    # create model
+    if FLAGS.pretrained:
+        print("=> using pre-trained model '{}'".format(FLAGS.arch))
+        model = models.__dict__[FLAGS.arch](pretrained=True)
+    else:
+        print("=> creating model '{}'".format(FLAGS.arch))
+        model = models.__dict__[FLAGS.arch]()
 
-    model = resnet.resnet18()
+    # model = resnet.resnet18()
 
     if FLAGS.arch.startswith('alexnet') or FLAGS.arch.startswith('vgg'):
         model.features = torch.nn.DataParallel(model.features)
